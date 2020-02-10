@@ -9,14 +9,9 @@ import * as cartActions from '../../store/actions/cart';
 import * as ordersActions from '../../store/actions/orders';
 
 const CartScreen = props => {
-  // Mendapatkan 'totalAmount' dari reducers/cart.js
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
-  // Mendapatkan 'items' dari reducers/cart.js
   const cartItems = useSelector(state => {
-    // Initial array transformedCartItems
     const transformedCartItems = [];
-    // Perulangan untuk mengambil semua 'items' dari reducers/cart.js
-    // ke cartItems
     for (const key in state.cart.items) {
       transformedCartItems.push({
         productId: key,
@@ -30,8 +25,6 @@ const CartScreen = props => {
       a.productId > b.productId ? 1 : -1
     );
   });
-
-  // initial dispatch
   const dispatch = useDispatch();
 
   return (
@@ -39,44 +32,29 @@ const CartScreen = props => {
       <Card style={styles.summary}>
         <Text style={styles.summaryText}>
           Total:{' '}
-          <Text 
-            style={styles.amount}
-            // Function Math untuk menjaga total print tetap positif
-          >
+          <Text style={styles.amount}>
             ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
           </Text>
         </Text>
         <Button
           color={Colors.accent}
           title="Order Now"
-          // Button 'Order Now' akan disabled ketika cartItems kosong
           disabled={cartItems.length === 0}
           onPress={() => {
-            // Memanggil function addOrder pada actions/orders.js 
-            // dengan mengosongkan 'items' dan 'totalAmount'
-            // dan membuat new Order()
             dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
           }}
         />
       </Card>
       <FlatList
-        // FlatList Memakai data cartItems
         data={cartItems}
-        // Initialisasi keyExtractor
         keyExtractor={item => item.productId}
-        // Render setiap item pada FlatList
         renderItem={itemData => (
           <CartItem
-            // Mengisi props image dengan CartItem.quantity
             quantity={itemData.item.quantity}
-            // Mengisi props image dengan CartItem.productTitle
             title={itemData.item.productTitle}
-            // Mengisi props image dengan CartItem.sum
             amount={itemData.item.sum}
             deletable
             onRemove={() => {
-              // Memanggil function removeFromCart() pada actions/cart.js
-              // dengan mengurangi atau menghapus 
               dispatch(cartActions.removeFromCart(itemData.item.productId));
             }}
           />
