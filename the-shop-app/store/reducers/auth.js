@@ -8,11 +8,13 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type){
         case AUTHENTICATE:
+            // Menyimpan token dan userId
             return {
                 token: action.token,
                 userId: action.userId
             };
         case LOGOUT:
+            // Kembali ke initialState
             return initialState;
         // case LOGIN:
         //     return {

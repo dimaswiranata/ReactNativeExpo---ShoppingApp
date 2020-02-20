@@ -13,10 +13,13 @@ import Colors from '../../constants/Colors';
 import * as cartActions from '../../store/actions/cart';
 
 const ProductDetailScreen = props => {
+  // Menerima parsing id product dari ProductOverviewScreen
   const productId = props.navigation.getParam('productId');
+  // Mencari product di state availableProducts dengan id yang sama dengan productId
   const selectedProduct = useSelector(state =>
     state.products.availableProducts.find(prod => prod.id === productId)
   );
+  // Inisialisasi useDispatch
   const dispatch = useDispatch();
 
   return (
@@ -27,10 +30,12 @@ const ProductDetailScreen = props => {
           color={Colors.primary}
           title="Add to Cart"
           onPress={() => {
+            // function addToCart di actions/cart.js
             dispatch(cartActions.addToCart(selectedProduct));
           }}
         />
       </View>
+      {/* // Menampilkan harga dan descripsi product */}
       <Text style={styles.price}>${selectedProduct.price.toFixed(2)}</Text>
       <Text style={styles.description}>{selectedProduct.description}</Text>
     </ScrollView>
@@ -39,6 +44,7 @@ const ProductDetailScreen = props => {
 
 ProductDetailScreen.navigationOptions = navData => {
   return {
+    // parsing title product dari ProductOverviewScreen 
     headerTitle: navData.navigation.getParam('productTitle')
   };
 };

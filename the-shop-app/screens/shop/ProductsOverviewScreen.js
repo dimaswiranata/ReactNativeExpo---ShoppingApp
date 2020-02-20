@@ -21,9 +21,11 @@ const ProductsOverviewScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
+  // useSelector untuk memanggil state availableProducts di reducers/products.js
   const products = useSelector(state => state.products.availableProducts);
   const dispatch = useDispatch();
 
+  // fungsi loadProducts untuk menampilkan semua Products
   const loadProducts = useCallback(async () => {
     console.log('LOAD PRODUCTS');
     setError(null);
@@ -36,17 +38,26 @@ const ProductsOverviewScreen = props => {
     setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
+  // Fungsi yang dioper ke useEffect akan berjalan
+  // setelah render dilakukan ke layar. 
   useEffect(() => {
+    // addListener('willFocus'); berguna untuk untuk melakukan panggilan API 
+    // tambahan saat pengguna mengunjungi kembali layar tertentu di Tab 
+    // Navigator, atau untuk melacak pengguna saat mereka mengetuk 
+    // aplikasi.
     const willFocusSub = props.navigation.addListener(
       'willFocus', 
       loadProducts
     );
 
     return () => {
+      // Setelah masuk ke layar kemudian focus dilepaskan
       willFocusSub.remove();
     };
   }, [loadProducts]);
 
+  // Ketika menLoad Products maka setIsLoading(true)
+  // Setelah load selesai maka diset menjadi false lagi
   useEffect(() => {
     setIsLoading(true);
     loadProducts().then(() => {
@@ -54,6 +65,7 @@ const ProductsOverviewScreen = props => {
     });
   }, [dispatch, loadProducts]);
 
+  // Mengirim id dan title products ke ProductDetail
   const selectItemHandler = (id, title) => {
     props.navigation.navigate('ProductDetail', {
       productId: id,
@@ -61,6 +73,8 @@ const ProductsOverviewScreen = props => {
     });
   };
 
+  // Ketika error message terisi maka
+  // Mengeluarkan text dan button untuk reload product kembali
   if (error) {
     return(
       <View style={styles.centered}>
@@ -74,6 +88,7 @@ const ProductsOverviewScreen = props => {
     )
   }
 
+  // Ketika isLoading bernilai true maka keluar ActivityIndicator
   if (isLoading){
     return (
       <View style={styles.centered}>
@@ -82,6 +97,7 @@ const ProductsOverviewScreen = props => {
     )
   }
 
+  // jika isLoading bernilai false dan products tidak terisi maka keluar pesan
   if (!isLoading && products.length === 0){
     return (
       <View style={styles.centered}>

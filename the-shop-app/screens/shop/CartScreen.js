@@ -11,8 +11,12 @@ import * as ordersActions from '../../store/actions/orders';
 const CartScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  // useSelector untuk memanggil state totalAmount di reducers/cart.js
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
+  // useSelector ini berfungsi memasukan semua  state items di reducers/cart.js
+  // ke cartItems
   const cartItems = useSelector(state => {
+    // Membuat array transformedCartItems untuk menampung semua items di reducers/cart.js terlebih dahulu
     const transformedCartItems = [];
     for (const key in state.cart.items) {
       transformedCartItems.push({
@@ -27,8 +31,11 @@ const CartScreen = props => {
       a.productId > b.productId ? 1 : -1
     );
   });
-  const dispatch = useDispatch();
 
+  // Inisialisasi useDispatch
+  const dispatch = useDispatch();
+  
+  // Memanggil function addOrder di actions/orders.js
   const sendOrderHandler = async () => {
     dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
   }
